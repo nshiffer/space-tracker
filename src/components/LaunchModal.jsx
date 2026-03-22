@@ -6,7 +6,7 @@ import ShareButton from './ShareButton'
 import FavoriteButton from './FavoriteButton'
 
 function LaunchModal({ launch, onClose, isFavorite, onToggleFavorite }) {
-  useDocumentTitle(launch ? `${launch.name} - Space Tracker` : null)
+  useDocumentTitle(launch ? `${launch.name} - LNCH CTRL` : null)
 
   useEffect(() => {
     const handleEsc = (e) => {

@@ -9,17 +9,27 @@ export const theme = {
   blue: '#4dc9f6',
   purple: '#c381b5',
   yellow: '#ffd700',
+  orange: '#ff8c00',
+  cyan: '#00ffff',
 }
 
 export function getStatusColor(abbrev) {
   switch (abbrev) {
-    case 'Go': return theme.green
+    case 'Go': return theme.blue
     case 'TBD': return theme.yellow
     case 'Success': return theme.green
     case 'Failure': return theme.red
-    case 'Hold': return theme.yellow
-    case 'In Flight': return theme.blue
+    case 'Hold': return theme.orange
+    case 'In Flight': return theme.cyan
     default: return theme.muted
+  }
+}
+
+export function getStatusTextColor(abbrev) {
+  switch (abbrev) {
+    case 'TBD': return theme.bg
+    case 'Hold': return theme.bg
+    default: return theme.bg
   }
 }
 

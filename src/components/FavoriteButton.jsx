@@ -1,11 +1,7 @@
 import { theme } from '../theme'
 
 function FavoriteButton({ isFavorite, onToggle, size = 'md' }) {
-  const sizes = {
-    sm: { w: 28, icon: 14 },
-    md: { w: 32, icon: 16 },
-  }
-  const s = sizes[size] || sizes.md
+  const isSmall = size === 'sm'
 
   return (
     <button
@@ -13,19 +9,16 @@ function FavoriteButton({ isFavorite, onToggle, size = 'md' }) {
         e.stopPropagation()
         onToggle()
       }}
-      className="flex items-center justify-center cursor-pointer transition-transform hover:scale-110 border-none"
+      className={`font-pixel cursor-pointer transition-all hover:brightness-125 border-none flex items-center gap-1 ${isSmall ? 'text-[7px] px-1.5 py-0.5' : 'text-[8px] px-2 py-1'}`}
       style={{
-        width: s.w,
-        height: s.w,
-        backgroundColor: isFavorite ? 'rgba(255, 0, 64, 0.2)' : 'rgba(0, 0, 0, 0.5)',
-        border: `2px solid ${isFavorite ? theme.red : theme.muted}`,
-        color: isFavorite ? theme.red : theme.muted,
+        backgroundColor: isFavorite ? 'rgba(0, 255, 65, 0.15)' : theme.panel,
+        color: isFavorite ? theme.green : theme.muted,
+        border: `2px solid ${isFavorite ? theme.green : theme.muted}`,
       }}
       aria-label={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
     >
-      <span className="font-pixel" style={{ fontSize: s.icon - 2 }}>
-        {isFavorite ? '\u2665' : '\u2661'}
-      </span>
+      <span>{isFavorite ? '\u2605' : '\u2606'}</span>
+      <span>{isFavorite ? 'SAVED' : 'SAVE'}</span>
     </button>
   )
 }

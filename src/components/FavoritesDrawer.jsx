@@ -33,7 +33,7 @@ function FavoritesDrawer({ isOpen, onClose, favorites, onRemove }) {
           style={{ borderBottom: `2px solid ${theme.border}` }}
         >
           <h2 className="font-pixel text-[10px]" style={{ color: theme.yellow }}>
-            &gt; SAVED MISSIONS
+            &gt; SAVED LAUNCHES
           </h2>
           <button
             onClick={onClose}

@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 
-const DEFAULT_TITLE = 'Space Tracker - Track Upcoming Rocket Launches'
+const DEFAULT_TITLE = 'LNCH CTRL - Track Upcoming Rocket Launches'
 
 export function useDocumentTitle(title) {
   useEffect(() => {

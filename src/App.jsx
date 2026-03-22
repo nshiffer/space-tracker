@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react'
+import { Routes, Route, Link } from 'react-router-dom'
 import { Button } from 'pixel-retroui'
 import { theme } from './theme'
 import Header from './components/Header'
@@ -11,13 +12,17 @@ import LaunchStats from './components/LaunchStats'
 import SpaceNews from './components/SpaceNews'
 import FavoritesDrawer from './components/FavoritesDrawer'
 import ScrollToTop from './components/ScrollToTop'
+import About from './pages/About'
+import HowLaunchesWork from './pages/HowLaunchesWork'
+import LaunchProviders from './pages/LaunchProviders'
+import FAQ from './pages/FAQ'
 import { useFavorites } from './hooks/useFavorites'
 import { useLocalStorage } from './hooks/useLocalStorage'
 
 const API_BASE = 'https://ll.thespacedevs.com/2.2.0'
 const PAGE_SIZE = 12
 
-function App() {
+function HomePage() {
   const [launches, setLaunches] = useState([])
   const [loading, setLoading] = useState(true)
   const [loadingMore, setLoadingMore] = useState(false)
@@ -80,15 +85,10 @@ function App() {
   const favoritesList = getFavoritesList()
 
   return (
-    <div className="min-h-screen flex flex-col font-retro">
-      {/* Star field background */}
-      <div className="star-field" />
-
-      <Header />
-
+    <>
       {nextLaunch && <NextLaunchBanner launch={nextLaunch} />}
 
-      <main className="flex-1 max-w-[1200px] mx-auto w-full px-4 md:px-6 py-8">
+      <div className="flex-1 w-full max-w-[1200px] mx-auto px-4 md:px-6 py-8">
         <Filters
           filter={filter}
           setFilter={setFilter}
@@ -127,7 +127,7 @@ function App() {
               bg={theme.red}
               textColor={theme.bg}
               borderColor={theme.border}
-              shadow={theme.purple}
+              shadow="transparent"
               className="font-pixel !text-[10px]"
               onClick={() => fetchLaunches(false)}
             >
@@ -181,7 +181,7 @@ function App() {
                   bg={theme.panel}
                   textColor={theme.blue}
                   borderColor={theme.blue}
-                  shadow={theme.purple}
+                  shadow="transparent"
                   className="font-pixel !text-[10px]"
                   onClick={() => fetchLaunches(true)}
                   disabled={loadingMore}
@@ -199,36 +199,7 @@ function App() {
             <SpaceNews />
           </div>
         )}
-      </main>
-
-      {/* Footer */}
-      <footer
-        className="py-6 text-center"
-        style={{ borderTop: `2px solid ${theme.border}` }}
-      >
-        <p className="font-pixel text-[8px]" style={{ color: theme.muted }}>
-          DATA BY{' '}
-          <a
-            href="https://thespacedevs.com/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="no-underline hover:underline"
-            style={{ color: theme.blue }}
-          >
-            THE SPACE DEVS
-          </a>
-          {' & '}
-          <a
-            href="https://spaceflightnewsapi.net/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="no-underline hover:underline"
-            style={{ color: theme.blue }}
-          >
-            SPACEFLIGHT NEWS API
-          </a>
-        </p>
-      </footer>
+      </div>
 
       {/* Modal */}
       {selectedLaunch && (
@@ -247,8 +218,53 @@ function App() {
         favorites={favoritesList}
         onRemove={toggleFavorite}
       />
+    </>
+  )
+}
 
-      {/* Scroll to Top */}
+function App() {
+  return (
+    <div className="min-h-screen flex flex-col font-retro">
+      {/* Star field background */}
+      <div className="star-field" />
+
+      <Header />
+
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/how-launches-work" element={<HowLaunchesWork />} />
+        <Route path="/launch-providers" element={<LaunchProviders />} />
+        <Route path="/faq" element={<FAQ />} />
+      </Routes>
+
+      {/* Footer */}
+      <footer
+        className="py-6 mt-auto"
+        style={{ borderTop: `2px solid ${theme.border}` }}
+      >
+        <div className="max-w-[1200px] mx-auto px-4 md:px-6">
+          <div className="flex flex-wrap justify-center gap-4 mb-4">
+            <Link to="/about" className="font-pixel text-[8px] no-underline hover:underline" style={{ color: theme.muted }}>ABOUT</Link>
+            <Link to="/how-launches-work" className="font-pixel text-[8px] no-underline hover:underline" style={{ color: theme.muted }}>HOW LAUNCHES WORK</Link>
+            <Link to="/launch-providers" className="font-pixel text-[8px] no-underline hover:underline" style={{ color: theme.muted }}>PROVIDERS</Link>
+            <Link to="/faq" className="font-pixel text-[8px] no-underline hover:underline" style={{ color: theme.muted }}>FAQ</Link>
+          </div>
+          <p className="font-pixel text-[7px] text-center" style={{ color: theme.muted }}>
+            DATA BY{' '}
+            <a href="https://thespacedevs.com/" target="_blank" rel="noopener noreferrer"
+              className="no-underline hover:underline" style={{ color: theme.blue }}>
+              THE SPACE DEVS
+            </a>
+            {' & '}
+            <a href="https://spaceflightnewsapi.net/" target="_blank" rel="noopener noreferrer"
+              className="no-underline hover:underline" style={{ color: theme.blue }}>
+              SPACEFLIGHT NEWS API
+            </a>
+          </p>
+        </div>
+      </footer>
+
       <ScrollToTop />
     </div>
   )

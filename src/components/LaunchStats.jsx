@@ -56,23 +56,24 @@ function LaunchStats({ launches, filter }) {
 
       {Object.keys(stats.statuses).length > 1 && (
         <div className="flex mt-3 gap-2 flex-wrap">
-          {Object.entries(stats.statuses).map(([status, count]) => (
-            <span
-              key={status}
-              className="font-pixel text-[8px] px-2 py-1 flex items-center gap-1.5"
-              style={{
-                backgroundColor: theme.panel,
-                border: `1px solid ${theme.border}`,
-                color: theme.text,
-              }}
-            >
+          {Object.entries(stats.statuses).map(([status, count]) => {
+            const color = getStatusDotColor(status)
+            const needsDarkText = status.includes('TBD') || status.includes('Hold')
+            return (
               <span
-                className="inline-block w-2 h-2"
-                style={{ backgroundColor: getStatusDotColor(status) }}
-              />
-              {status.toUpperCase()} {count}
-            </span>
-          ))}
+                key={status}
+                className={`font-pixel text-[8px] px-2 py-1 flex items-center gap-1.5${status.includes('Flight') ? ' blink' : ''}`}
+                style={{
+                  backgroundColor: color,
+                  color: needsDarkText ? theme.bg : theme.bg,
+                  border: `1px solid ${color}`,
+                  boxShadow: `0 0 6px ${color}40`,
+                }}
+              >
+                {status.toUpperCase()} {count}
+              </span>
+            )
+          })}
         </div>
       )}
     </div>
@@ -107,10 +108,12 @@ function StatCard({ label, value, subValue, isText }) {
 }
 
 function getStatusDotColor(status) {
-  if (status.includes('Go') || status.includes('Success')) return theme.green
-  if (status.includes('TBD') || status.includes('Hold')) return theme.yellow
+  if (status.includes('Success')) return theme.green
+  if (status.includes('Go')) return theme.blue
+  if (status.includes('TBD')) return theme.yellow
+  if (status.includes('Hold')) return theme.orange
   if (status.includes('Fail')) return theme.red
-  if (status.includes('Flight')) return theme.blue
+  if (status.includes('Flight')) return theme.cyan
   return theme.muted
 }
 
