@@ -1,10 +1,10 @@
 import { useState, useEffect, useCallback } from 'react'
+import { Box, Flex, Text, Spinner, Button, SimpleGrid, Theme } from '@chakra-ui/react'
 import Header from './components/Header'
 import LaunchCard from './components/LaunchCard'
 import LaunchModal from './components/LaunchModal'
 import Filters from './components/Filters'
-import Countdown from './components/Countdown'
-import './App.css'
+import NextLaunchBanner from './components/NextLaunchBanner'
 
 const API_BASE = 'https://ll.thespacedevs.com/2.2.0'
 
@@ -43,91 +43,79 @@ function App() {
   const nextLaunch = filter === 'upcoming' && launches.length > 0 ? launches[0] : null
 
   return (
-    <div className="app">
-      <Header />
+    <Theme appearance="dark" hasBackground>
+      <Box minH="100vh" display="flex" flexDirection="column" fontFamily="'Inter', sans-serif">
+        <Header />
 
-      {nextLaunch && (
-        <section className="next-launch-section">
-          <div className="container">
-            <div className="next-launch-banner">
-              <div className="next-launch-info">
-                <span className="next-label">Next Launch</span>
-                <h2 className="next-launch-name">{nextLaunch.name}</h2>
-                <p className="next-launch-provider">
-                  {nextLaunch.launch_service_provider?.name || 'Unknown Provider'}
-                </p>
-                {nextLaunch.pad?.location?.name && (
-                  <p className="next-launch-location">{nextLaunch.pad.location.name}</p>
-                )}
-              </div>
-              <Countdown targetDate={nextLaunch.net} />
-            </div>
-          </div>
-        </section>
-      )}
+        {nextLaunch && <NextLaunchBanner launch={nextLaunch} />}
 
-      <main className="container">
-        <Filters
-          filter={filter}
-          setFilter={setFilter}
-          searchQuery={searchQuery}
-          setSearchQuery={setSearchQuery}
-        />
+        <Box flex="1" maxW="1200px" mx="auto" w="100%" px={{ base: 4, md: 6 }} py={8}>
+          <Filters
+            filter={filter}
+            setFilter={setFilter}
+            searchQuery={searchQuery}
+            setSearchQuery={setSearchQuery}
+          />
 
-        {loading && (
-          <div className="loading">
-            <div className="spinner" />
-            <p>Loading launches...</p>
-          </div>
-        )}
+          {loading && (
+            <Flex direction="column" align="center" gap={4} py={16}>
+              <Spinner size="xl" color="blue.400" borderWidth="3px" />
+              <Text color="gray.400">Loading launches...</Text>
+            </Flex>
+          )}
 
-        {error && (
-          <div className="error-message">
-            <p>Failed to load launches: {error}</p>
-            <button onClick={fetchLaunches} className="retry-btn">
-              Retry
-            </button>
-          </div>
-        )}
+          {error && (
+            <Flex direction="column" align="center" gap={4} py={12}>
+              <Text color="red.400" fontSize="lg">Failed to load launches: {error}</Text>
+              <Button
+                onClick={fetchLaunches}
+                bg="blue.500"
+                color="white"
+                _hover={{ bg: 'blue.600' }}
+                size="md"
+              >
+                Retry
+              </Button>
+            </Flex>
+          )}
 
-        {!loading && !error && launches.length === 0 && (
-          <div className="empty-state">
-            <p>No launches found.</p>
-          </div>
-        )}
+          {!loading && !error && launches.length === 0 && (
+            <Flex justify="center" py={16}>
+              <Text color="gray.500" fontSize="lg">No launches found.</Text>
+            </Flex>
+          )}
 
-        {!loading && !error && launches.length > 0 && (
-          <div className="launches-grid">
-            {launches.map((launch) => (
-              <LaunchCard
-                key={launch.id}
-                launch={launch}
-                onClick={() => setSelectedLaunch(launch)}
-              />
-            ))}
-          </div>
-        )}
-      </main>
+          {!loading && !error && launches.length > 0 && (
+            <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} gap={6}>
+              {launches.map((launch) => (
+                <LaunchCard
+                  key={launch.id}
+                  launch={launch}
+                  onClick={() => setSelectedLaunch(launch)}
+                />
+              ))}
+            </SimpleGrid>
+          )}
+        </Box>
 
-      <footer className="footer">
-        <div className="container">
-          <p>
+        <Box borderTopWidth="1px" borderColor="gray.800" py={6} textAlign="center">
+          <Text color="gray.500" fontSize="sm">
             Data provided by{' '}
-            <a href="https://thespacedevs.com/" target="_blank" rel="noopener noreferrer">
+            <Box as="a" href="https://thespacedevs.com/" target="_blank" rel="noopener noreferrer" color="blue.400" _hover={{ textDecoration: 'underline' }}>
               The Space Devs
-            </a>{' '}
+            </Box>{' '}
             Launch Library 2 API
-          </p>
-        </div>
-      </footer>
+          </Text>
+        </Box>
 
-      {selectedLaunch && (
-        <LaunchModal
-          launch={selectedLaunch}
-          onClose={() => setSelectedLaunch(null)}
-        />
-      )}
-    </div>
+        {selectedLaunch && (
+          <LaunchModal
+            launch={selectedLaunch}
+            onClose={() => setSelectedLaunch(null)}
+          />
+        )}
+      </Box>
+    </Theme>
   )
 }
 
