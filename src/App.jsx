@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useMemo } from 'react'
 import { Routes, Route, Link } from 'react-router-dom'
 import { Button } from 'pixel-retroui'
 import { theme } from './theme'
@@ -19,88 +19,70 @@ import FAQ from './pages/FAQ'
 import { useFavorites } from './hooks/useFavorites'
 import { useLocalStorage } from './hooks/useLocalStorage'
 
-const API_BASE = 'https://ll.thespacedevs.com/2.2.0'
+const CACHE_URL = `${import.meta.env.BASE_URL}data/launches.json`
 const PAGE_SIZE = 12
 
-// Simple in-memory cache to avoid hitting API rate limits (429)
-const cache = {}
-const CACHE_TTL = 5 * 60 * 1000 // 5 minutes
-
-async function cachedFetch(url) {
-  const now = Date.now()
-  if (cache[url] && now - cache[url].time < CACHE_TTL) {
-    return cache[url].data
-  }
-  const response = await fetch(url)
-  if (response.status === 429) {
-    // Check if we have stale cached data we can use
-    if (cache[url]) return cache[url].data
-    throw new Error('Rate limited — the API is busy. Please wait a moment and try again.')
-  }
-  if (!response.ok) throw new Error(`API error: ${response.status}`)
-  const data = await response.json()
-  cache[url] = { data, time: now }
-  return data
-}
-
 function HomePage() {
-  const [launches, setLaunches] = useState([])
+  const [allData, setAllData] = useState(null)
   const [loading, setLoading] = useState(true)
-  const [loadingMore, setLoadingMore] = useState(false)
   const [error, setError] = useState(null)
   const [selectedLaunch, setSelectedLaunch] = useState(null)
   const [filter, setFilter] = useState('upcoming')
   const [searchQuery, setSearchQuery] = useState('')
-  const [nextPageUrl, setNextPageUrl] = useState(null)
-  const [totalCount, setTotalCount] = useState(0)
+  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE)
   const [view, setView] = useLocalStorage('space-tracker-view', 'grid')
   const [showFavorites, setShowFavorites] = useState(false)
 
   const { toggleFavorite, isFavorite, getFavoritesList } = useFavorites()
 
-  const fetchLaunches = useCallback(async (append = false) => {
-    if (append) {
-      setLoadingMore(true)
-    } else {
-      setLoading(true)
-      setError(null)
-    }
-
+  // Fetch the cached JSON data
+  const fetchData = useCallback(async () => {
+    setLoading(true)
+    setError(null)
     try {
-      let url
-      if (append && nextPageUrl) {
-        url = nextPageUrl
-      } else {
-        const endpoint = filter === 'upcoming' ? 'launch/upcoming' : 'launch/previous'
-        const searchParam = searchQuery ? `&search=${encodeURIComponent(searchQuery)}` : ''
-        url = `${API_BASE}/${endpoint}/?limit=${PAGE_SIZE}&mode=detailed${searchParam}`
-      }
-
-      const data = await cachedFetch(url)
-
-      if (append) {
-        setLaunches((prev) => [...prev, ...(data.results || [])])
-      } else {
-        setLaunches(data.results || [])
-      }
-      setNextPageUrl(data.next || null)
-      setTotalCount(data.count || 0)
+      const res = await fetch(CACHE_URL)
+      if (!res.ok) throw new Error('Launch data unavailable. Please try again later.')
+      const data = await res.json()
+      setAllData(data)
     } catch (err) {
       setError(err.message)
-      if (!append) setLaunches([])
     } finally {
       setLoading(false)
-      setLoadingMore(false)
     }
-  }, [filter, searchQuery, nextPageUrl])
+  }, [])
 
   useEffect(() => {
-    setNextPageUrl(null)
-    fetchLaunches(false)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    fetchData()
+  }, [fetchData])
+
+  // Reset visible count when filter or search changes
+  useEffect(() => {
+    setVisibleCount(PAGE_SIZE)
   }, [filter, searchQuery])
 
-  const nextLaunch = filter === 'upcoming' && launches.length > 0 ? launches[0] : null
+  // Get the right dataset and apply client-side search
+  const allLaunches = useMemo(() => {
+    if (!allData) return []
+    const dataset = filter === 'upcoming' ? allData.upcoming : allData.previous
+    const results = dataset?.results || []
+    if (!searchQuery) return results
+
+    const q = searchQuery.toLowerCase()
+    return results.filter(launch =>
+      (launch.name || '').toLowerCase().includes(q) ||
+      (launch.launch_service_provider?.name || '').toLowerCase().includes(q) ||
+      (launch.pad?.location?.name || '').toLowerCase().includes(q) ||
+      (launch.rocket?.configuration?.full_name || '').toLowerCase().includes(q)
+    )
+  }, [allData, filter, searchQuery])
+
+  // Client-side pagination
+  const launches = useMemo(() => {
+    return allLaunches.slice(0, visibleCount)
+  }, [allLaunches, visibleCount])
+
+  const hasMore = visibleCount < allLaunches.length
+  const nextLaunch = filter === 'upcoming' && allLaunches.length > 0 ? allLaunches[0] : null
   const favoritesList = getFavoritesList()
 
   return (
@@ -119,9 +101,18 @@ function HomePage() {
           onOpenFavorites={() => setShowFavorites(true)}
         />
 
+        {/* Last updated indicator */}
+        {allData?.lastUpdated && (
+          <div className="mb-4">
+            <span className="font-pixel text-[7px]" style={{ color: theme.muted }}>
+              DATA UPDATED: {new Date(allData.lastUpdated).toLocaleString()}
+            </span>
+          </div>
+        )}
+
         {/* Stats */}
         {!loading && !error && launches.length > 0 && (
-          <LaunchStats launches={launches} filter={filter} />
+          <LaunchStats launches={allLaunches} filter={filter} />
         )}
 
         {/* Loading */}
@@ -148,7 +139,7 @@ function HomePage() {
               borderColor={theme.border}
               shadow="transparent"
               className="font-pixel !text-[10px]"
-              onClick={() => fetchLaunches(false)}
+              onClick={fetchData}
             >
               RETRY
             </Button>
@@ -159,7 +150,7 @@ function HomePage() {
         {!loading && !error && launches.length === 0 && (
           <div className="flex justify-center py-16">
             <span className="font-pixel text-[10px]" style={{ color: theme.muted }}>
-              NO LAUNCHES FOUND.
+              {searchQuery ? 'NO MATCHING LAUNCHES FOUND.' : 'NO LAUNCHES FOUND.'}
             </span>
           </div>
         )}
@@ -194,7 +185,7 @@ function HomePage() {
             )}
 
             {/* Load More */}
-            {nextPageUrl && (
+            {hasMore && (
               <div className="flex justify-center mt-8">
                 <Button
                   bg={theme.panel}
@@ -202,10 +193,9 @@ function HomePage() {
                   borderColor={theme.blue}
                   shadow="transparent"
                   className="font-pixel !text-[10px]"
-                  onClick={() => fetchLaunches(true)}
-                  disabled={loadingMore}
+                  onClick={() => setVisibleCount(prev => prev + PAGE_SIZE)}
                 >
-                  {loadingMore ? 'LOADING...' : `LOAD MORE (${launches.length}/${totalCount})`}
+                  LOAD MORE ({launches.length}/{allLaunches.length})
                 </Button>
               </div>
             )}
