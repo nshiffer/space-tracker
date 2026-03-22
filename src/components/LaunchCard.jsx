@@ -1,6 +1,7 @@
 import { Box, Flex, Text, Image } from '@chakra-ui/react'
+import FavoriteButton from './FavoriteButton'
 
-function LaunchCard({ launch, onClick }) {
+function LaunchCard({ launch, onClick, isFavorite, onToggleFavorite }) {
   const launchDate = new Date(launch.net)
   const statusColor = getStatusColor(launch.status?.abbrev)
   const imageUrl = launch.image?.image_url || launch.image?.thumbnail_url || null
@@ -39,22 +40,22 @@ function LaunchCard({ launch, onClick }) {
             🚀
           </Flex>
         )}
-        <Box
-          position="absolute"
-          top={3}
-          right={3}
-          px={2.5}
-          py={1}
-          borderRadius="sm"
-          fontSize="11px"
-          fontWeight="700"
-          color="white"
-          textTransform="uppercase"
-          letterSpacing="0.5px"
-          bg={statusColor}
-        >
-          {launch.status?.name || 'Unknown'}
-        </Box>
+        <Flex position="absolute" top={3} right={3} gap={2}>
+          <FavoriteButton isFavorite={isFavorite} onToggle={onToggleFavorite} size="sm" />
+          <Box
+            px={2.5}
+            py={1}
+            borderRadius="sm"
+            fontSize="11px"
+            fontWeight="700"
+            color="white"
+            textTransform="uppercase"
+            letterSpacing="0.5px"
+            bg={statusColor}
+          >
+            {launch.status?.name || 'Unknown'}
+          </Box>
+        </Flex>
       </Box>
 
       <Box p={5}>

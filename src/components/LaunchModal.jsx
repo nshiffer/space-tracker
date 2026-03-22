@@ -1,8 +1,10 @@
 import { useEffect } from 'react'
 import { Box, Flex, Text, Image, Button } from '@chakra-ui/react'
 import { useDocumentTitle } from '../hooks/useDocumentTitle'
+import ShareButton from './ShareButton'
+import FavoriteButton from './FavoriteButton'
 
-function LaunchModal({ launch, onClose }) {
+function LaunchModal({ launch, onClose, isFavorite, onToggleFavorite }) {
   useDocumentTitle(launch ? `${launch.name} - Space Tracker` : null)
 
   useEffect(() => {
@@ -45,28 +47,27 @@ function LaunchModal({ launch, onClose }) {
         position="relative"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Close button */}
-        <Button
-          position="absolute"
-          top={3}
-          right={3}
-          bg="rgba(0, 0, 0, 0.5)"
-          color="white"
-          borderRadius="full"
-          w="36px"
-          h="36px"
-          minW="36px"
-          p={0}
-          zIndex={10}
-          _hover={{ bg: 'rgba(0, 0, 0, 0.8)' }}
-          onClick={onClose}
-          aria-label="Close"
-        >
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <line x1="18" y1="6" x2="6" y2="18" />
-            <line x1="6" y1="6" x2="18" y2="18" />
-          </svg>
-        </Button>
+        {/* Top action buttons */}
+        <Flex position="absolute" top={3} right={3} gap={2} zIndex={10}>
+          <FavoriteButton isFavorite={isFavorite} onToggle={onToggleFavorite} />
+          <Button
+            bg="rgba(0, 0, 0, 0.5)"
+            color="white"
+            borderRadius="full"
+            w="36px"
+            h="36px"
+            minW="36px"
+            p={0}
+            _hover={{ bg: 'rgba(0, 0, 0, 0.8)' }}
+            onClick={onClose}
+            aria-label="Close"
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
+          </Button>
+        </Flex>
 
         {/* Image */}
         {imageUrl && (
@@ -78,31 +79,35 @@ function LaunchModal({ launch, onClose }) {
         {/* Body */}
         <Box p={6}>
           <Flex justify="space-between" align="flex-start" gap={4} mb={6} flexWrap="wrap">
-            <Text
-              fontFamily="'Space Grotesk', sans-serif"
-              fontSize={{ base: '20px', md: '24px' }}
-              fontWeight="700"
-              lineHeight={1.3}
-              color="gray.100"
-            >
-              {launch.name}
-            </Text>
-            {launch.status?.name && (
-              <Box
-                flexShrink={0}
-                px={3}
-                py={1}
-                borderRadius="sm"
-                fontSize="11px"
+            <Box flex={1}>
+              <Text
+                fontFamily="'Space Grotesk', sans-serif"
+                fontSize={{ base: '20px', md: '24px' }}
                 fontWeight="700"
-                textTransform="uppercase"
-                letterSpacing="0.5px"
-                bg="blue.500"
-                color="white"
+                lineHeight={1.3}
+                color="gray.100"
               >
-                {launch.status.name}
-              </Box>
-            )}
+                {launch.name}
+              </Text>
+            </Box>
+            <Flex gap={2} align="center" flexShrink={0}>
+              <ShareButton launch={launch} />
+              {launch.status?.name && (
+                <Box
+                  px={3}
+                  py={1}
+                  borderRadius="sm"
+                  fontSize="11px"
+                  fontWeight="700"
+                  textTransform="uppercase"
+                  letterSpacing="0.5px"
+                  bg="blue.500"
+                  color="white"
+                >
+                  {launch.status.name}
+                </Box>
+              )}
+            </Flex>
           </Flex>
 
           {/* Details */}
