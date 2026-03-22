@@ -1,0 +1,22 @@
+{
+  "name": "Space Tracker",
+  "short_name": "SpaceTracker",
+  "description": "Track upcoming and past space launches in real-time",
+  "start_url": "/space-tracker/",
+  "scope": "/space-tracker/",
+  "display": "standalone",
+  "background_color": "#0f172a",
+  "theme_color": "#0f172a",
+  "icons": [
+    {
+      "src": "/space-tracker/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    },
+    {
+      "src": "/space-tracker/apple-touch-icon.svg",
+      "sizes": "180x180",
+      "type": "image/svg+xml"
+    }
+  ]
+}

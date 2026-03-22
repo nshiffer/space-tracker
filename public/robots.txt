@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://nshiffer.github.io/space-tracker/sitemap.xml

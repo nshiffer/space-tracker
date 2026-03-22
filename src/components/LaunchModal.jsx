@@ -1,7 +1,10 @@
 import { useEffect } from 'react'
 import { Box, Flex, Text, Image, Button } from '@chakra-ui/react'
+import { useDocumentTitle } from '../hooks/useDocumentTitle'
 
 function LaunchModal({ launch, onClose }) {
+  useDocumentTitle(launch ? `${launch.name} - Space Tracker` : null)
+
   useEffect(() => {
     const handleEsc = (e) => {
       if (e.key === 'Escape') onClose()

@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 180" width="180" height="180">
   <defs>
     <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
       <stop offset="0%" stop-color="#0f172a"/>
@@ -18,28 +18,24 @@
       <stop offset="100%" stop-color="#3b82f6"/>
     </linearGradient>
   </defs>
-  <!-- Background circle -->
-  <circle cx="32" cy="32" r="32" fill="url(#bg)"/>
+  <rect width="180" height="180" rx="36" fill="url(#bg)"/>
   <!-- Stars -->
-  <circle cx="10" cy="12" r="1" fill="#fff" opacity="0.7"/>
-  <circle cx="52" cy="8" r="1.2" fill="#fff" opacity="0.8"/>
-  <circle cx="8" cy="42" r="0.8" fill="#fff" opacity="0.5"/>
-  <circle cx="54" cy="48" r="1" fill="#fff" opacity="0.6"/>
-  <circle cx="48" cy="28" r="0.7" fill="#fff" opacity="0.4"/>
-  <circle cx="16" cy="52" r="0.9" fill="#fff" opacity="0.5"/>
-  <!-- Rocket body -->
-  <g transform="translate(32,30) rotate(-45)">
-    <!-- Nose cone -->
+  <circle cx="28" cy="34" r="2.5" fill="#fff" opacity="0.7"/>
+  <circle cx="146" cy="22" r="3" fill="#fff" opacity="0.8"/>
+  <circle cx="22" cy="118" r="2" fill="#fff" opacity="0.5"/>
+  <circle cx="152" cy="135" r="2.5" fill="#fff" opacity="0.6"/>
+  <circle cx="135" cy="78" r="1.8" fill="#fff" opacity="0.4"/>
+  <circle cx="45" cy="146" r="2.2" fill="#fff" opacity="0.5"/>
+  <circle cx="160" cy="55" r="1.5" fill="#fff" opacity="0.3"/>
+  <circle cx="38" cy="72" r="1.8" fill="#fff" opacity="0.4"/>
+  <!-- Rocket -->
+  <g transform="translate(90,84) rotate(-45) scale(2.8)">
     <path d="M-5,-18 Q0,-28 5,-18 Z" fill="url(#rocket)"/>
-    <!-- Body -->
     <rect x="-5" y="-18" width="10" height="24" rx="1" fill="url(#rocket)"/>
-    <!-- Window -->
     <circle cx="0" cy="-10" r="3" fill="url(#window)"/>
     <circle cx="0" cy="-10" r="1.5" fill="#dbeafe" opacity="0.6"/>
-    <!-- Fins -->
     <path d="M-5,2 L-11,8 L-5,6 Z" fill="#3b82f6"/>
     <path d="M5,2 L11,8 L5,6 Z" fill="#3b82f6"/>
-    <!-- Flame -->
     <path d="M-4,6 Q0,18 4,6" fill="url(#flame)"/>
     <path d="M-2,6 Q0,14 2,6" fill="#fbbf24" opacity="0.8"/>
   </g>
