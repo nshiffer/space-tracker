@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react'
-import { Box, Flex, Text, Spinner, Button, SimpleGrid, Theme } from '@chakra-ui/react'
+import { Button } from 'pixel-retroui'
+import { theme } from './theme'
 import Header from './components/Header'
 import LaunchCard from './components/LaunchCard'
 import LaunchListItem from './components/LaunchListItem'
@@ -79,150 +80,177 @@ function App() {
   const favoritesList = getFavoritesList()
 
   return (
-    <Theme appearance="dark" hasBackground>
-      <Box minH="100vh" display="flex" flexDirection="column" fontFamily="'Inter', sans-serif">
-        <Header />
+    <div className="min-h-screen flex flex-col font-retro">
+      {/* Star field background */}
+      <div className="star-field" />
 
-        {nextLaunch && <NextLaunchBanner launch={nextLaunch} />}
+      <Header />
 
-        <Box flex="1" maxW="1200px" mx="auto" w="100%" px={{ base: 4, md: 6 }} py={8}>
-          <Filters
-            filter={filter}
-            setFilter={setFilter}
-            searchQuery={searchQuery}
-            setSearchQuery={setSearchQuery}
-            view={view}
-            setView={setView}
-            favoritesCount={favoritesList.length}
-            onOpenFavorites={() => setShowFavorites(true)}
-          />
+      {nextLaunch && <NextLaunchBanner launch={nextLaunch} />}
 
-          {/* Stats */}
-          {!loading && !error && launches.length > 0 && (
-            <LaunchStats launches={launches} filter={filter} />
-          )}
-
-          {loading && (
-            <Flex direction="column" align="center" gap={4} py={16}>
-              <Spinner size="xl" color="blue.400" borderWidth="3px" />
-              <Text color="gray.400">Loading launches...</Text>
-            </Flex>
-          )}
-
-          {error && (
-            <Flex direction="column" align="center" gap={4} py={12}>
-              <Text color="red.400" fontSize="lg">Failed to load launches: {error}</Text>
-              <Button
-                onClick={() => fetchLaunches(false)}
-                bg="blue.500"
-                color="white"
-                _hover={{ bg: 'blue.600' }}
-                size="md"
-              >
-                Retry
-              </Button>
-            </Flex>
-          )}
-
-          {!loading && !error && launches.length === 0 && (
-            <Flex justify="center" py={16}>
-              <Text color="gray.500" fontSize="lg">No launches found.</Text>
-            </Flex>
-          )}
-
-          {!loading && !error && launches.length > 0 && (
-            <>
-              {view === 'grid' ? (
-                <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} gap={6}>
-                  {launches.map((launch) => (
-                    <LaunchCard
-                      key={launch.id}
-                      launch={launch}
-                      onClick={() => setSelectedLaunch(launch)}
-                      isFavorite={isFavorite(launch.id)}
-                      onToggleFavorite={() => toggleFavorite(launch)}
-                    />
-                  ))}
-                </SimpleGrid>
-              ) : (
-                <Flex direction="column" gap={4}>
-                  {launches.map((launch) => (
-                    <LaunchListItem
-                      key={launch.id}
-                      launch={launch}
-                      onClick={() => setSelectedLaunch(launch)}
-                      isFavorite={isFavorite(launch.id)}
-                      onToggleFavorite={() => toggleFavorite(launch)}
-                    />
-                  ))}
-                </Flex>
-              )}
-
-              {/* Load More */}
-              {nextPageUrl && (
-                <Flex justify="center" mt={8}>
-                  <Button
-                    onClick={() => fetchLaunches(true)}
-                    bg="transparent"
-                    color="blue.400"
-                    borderWidth="1px"
-                    borderColor="blue.500"
-                    _hover={{ bg: 'rgba(59, 130, 246, 0.1)' }}
-                    size="lg"
-                    px={8}
-                    loading={loadingMore}
-                    loadingText="Loading..."
-                  >
-                    Load More ({launches.length} of {totalCount})
-                  </Button>
-                </Flex>
-              )}
-            </>
-          )}
-
-          {/* Space News */}
-          {!loading && !error && (
-            <Box mt={12}>
-              <SpaceNews />
-            </Box>
-          )}
-        </Box>
-
-        <Box borderTopWidth="1px" borderColor="gray.800" py={6} textAlign="center">
-          <Text color="gray.500" fontSize="sm">
-            Data provided by{' '}
-            <Box as="a" href="https://thespacedevs.com/" target="_blank" rel="noopener noreferrer" color="blue.400" _hover={{ textDecoration: 'underline' }}>
-              The Space Devs
-            </Box>{' '}
-            &{' '}
-            <Box as="a" href="https://spaceflightnewsapi.net/" target="_blank" rel="noopener noreferrer" color="blue.400" _hover={{ textDecoration: 'underline' }}>
-              Spaceflight News API
-            </Box>
-          </Text>
-        </Box>
-
-        {/* Modal */}
-        {selectedLaunch && (
-          <LaunchModal
-            launch={selectedLaunch}
-            onClose={() => setSelectedLaunch(null)}
-            isFavorite={isFavorite(selectedLaunch.id)}
-            onToggleFavorite={() => toggleFavorite(selectedLaunch)}
-          />
-        )}
-
-        {/* Favorites Drawer */}
-        <FavoritesDrawer
-          isOpen={showFavorites}
-          onClose={() => setShowFavorites(false)}
-          favorites={favoritesList}
-          onRemove={toggleFavorite}
+      <main className="flex-1 max-w-[1200px] mx-auto w-full px-4 md:px-6 py-8">
+        <Filters
+          filter={filter}
+          setFilter={setFilter}
+          searchQuery={searchQuery}
+          setSearchQuery={setSearchQuery}
+          view={view}
+          setView={setView}
+          favoritesCount={favoritesList.length}
+          onOpenFavorites={() => setShowFavorites(true)}
         />
 
-        {/* Scroll to Top */}
-        <ScrollToTop />
-      </Box>
-    </Theme>
+        {/* Stats */}
+        {!loading && !error && launches.length > 0 && (
+          <LaunchStats launches={launches} filter={filter} />
+        )}
+
+        {/* Loading */}
+        {loading && (
+          <div className="flex flex-col items-center gap-4 py-16">
+            <span className="font-pixel text-sm glow-green blink" style={{ color: theme.green }}>
+              LOADING...
+            </span>
+            <span className="font-retro text-xl" style={{ color: theme.muted }}>
+              Establishing uplink to mission control
+            </span>
+          </div>
+        )}
+
+        {/* Error */}
+        {error && (
+          <div className="flex flex-col items-center gap-4 py-12">
+            <span className="font-pixel text-[10px]" style={{ color: theme.red }}>
+              ! ERROR: {error}
+            </span>
+            <Button
+              bg={theme.red}
+              textColor={theme.bg}
+              borderColor={theme.border}
+              shadow={theme.purple}
+              className="font-pixel !text-[10px]"
+              onClick={() => fetchLaunches(false)}
+            >
+              RETRY
+            </Button>
+          </div>
+        )}
+
+        {/* Empty */}
+        {!loading && !error && launches.length === 0 && (
+          <div className="flex justify-center py-16">
+            <span className="font-pixel text-[10px]" style={{ color: theme.muted }}>
+              NO LAUNCHES FOUND.
+            </span>
+          </div>
+        )}
+
+        {/* Launch list */}
+        {!loading && !error && launches.length > 0 && (
+          <>
+            {view === 'grid' ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                {launches.map((launch) => (
+                  <LaunchCard
+                    key={launch.id}
+                    launch={launch}
+                    onClick={() => setSelectedLaunch(launch)}
+                    isFavorite={isFavorite(launch.id)}
+                    onToggleFavorite={() => toggleFavorite(launch)}
+                  />
+                ))}
+              </div>
+            ) : (
+              <div className="flex flex-col gap-4">
+                {launches.map((launch) => (
+                  <LaunchListItem
+                    key={launch.id}
+                    launch={launch}
+                    onClick={() => setSelectedLaunch(launch)}
+                    isFavorite={isFavorite(launch.id)}
+                    onToggleFavorite={() => toggleFavorite(launch)}
+                  />
+                ))}
+              </div>
+            )}
+
+            {/* Load More */}
+            {nextPageUrl && (
+              <div className="flex justify-center mt-8">
+                <Button
+                  bg={theme.panel}
+                  textColor={theme.blue}
+                  borderColor={theme.blue}
+                  shadow={theme.purple}
+                  className="font-pixel !text-[10px]"
+                  onClick={() => fetchLaunches(true)}
+                  disabled={loadingMore}
+                >
+                  {loadingMore ? 'LOADING...' : `LOAD MORE (${launches.length}/${totalCount})`}
+                </Button>
+              </div>
+            )}
+          </>
+        )}
+
+        {/* Space News */}
+        {!loading && !error && (
+          <div className="mt-12">
+            <SpaceNews />
+          </div>
+        )}
+      </main>
+
+      {/* Footer */}
+      <footer
+        className="py-6 text-center"
+        style={{ borderTop: `2px solid ${theme.border}` }}
+      >
+        <p className="font-pixel text-[8px]" style={{ color: theme.muted }}>
+          DATA BY{' '}
+          <a
+            href="https://thespacedevs.com/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="no-underline hover:underline"
+            style={{ color: theme.blue }}
+          >
+            THE SPACE DEVS
+          </a>
+          {' & '}
+          <a
+            href="https://spaceflightnewsapi.net/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="no-underline hover:underline"
+            style={{ color: theme.blue }}
+          >
+            SPACEFLIGHT NEWS API
+          </a>
+        </p>
+      </footer>
+
+      {/* Modal */}
+      {selectedLaunch && (
+        <LaunchModal
+          launch={selectedLaunch}
+          onClose={() => setSelectedLaunch(null)}
+          isFavorite={isFavorite(selectedLaunch.id)}
+          onToggleFavorite={() => toggleFavorite(selectedLaunch)}
+        />
+      )}
+
+      {/* Favorites Drawer */}
+      <FavoritesDrawer
+        isOpen={showFavorites}
+        onClose={() => setShowFavorites(false)}
+        favorites={favoritesList}
+        onRemove={toggleFavorite}
+      />
+
+      {/* Scroll to Top */}
+      <ScrollToTop />
+    </div>
   )
 }
 

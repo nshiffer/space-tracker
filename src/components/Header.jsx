@@ -1,57 +1,45 @@
-import { Box, Flex, Text } from '@chakra-ui/react'
+import { theme } from '../theme'
 
 function Header() {
   return (
-    <Box
-      as="header"
-      bg="rgba(17, 24, 39, 0.92)"
-      borderBottomWidth="1px"
-      borderColor="gray.800"
-      position="sticky"
-      top={0}
-      zIndex={100}
-      backdropFilter="blur(12px)"
+    <header
+      className="sticky top-0 z-50"
+      style={{
+        backgroundColor: 'rgba(15, 15, 35, 0.95)',
+        borderBottom: `3px solid ${theme.border}`,
+        backdropFilter: 'blur(8px)',
+      }}
     >
-      <Flex maxW="1200px" mx="auto" px={{ base: 4, md: 6 }} py={4} justify="space-between" align="center">
-        <Flex align="center" gap={3}>
-          <Text fontSize="28px" lineHeight={1} role="img" aria-label="rocket">🚀</Text>
-          <Text
-            fontFamily="'Space Grotesk', sans-serif"
-            fontSize="22px"
-            fontWeight="700"
-            bgGradient="to-r"
-            gradientFrom="blue.400"
-            gradientTo="purple.400"
-            bgClip="text"
+      <div className="max-w-[1200px] mx-auto px-4 md:px-6 py-4 flex justify-between items-center">
+        <div className="flex items-center gap-3">
+          <span className="text-2xl pixel-image">&#x1F680;</span>
+          <h1
+            className="font-pixel text-sm md:text-base glow-blue"
+            style={{ color: theme.blue }}
           >
-            Space Tracker
-          </Text>
-        </Flex>
-        <Flex gap={{ base: 4, md: 6 }}>
+            SPACE TRACKER
+          </h1>
+        </div>
+        <nav className="flex gap-4 md:gap-6">
           {[
             { label: 'NASA', href: 'https://www.nasa.gov/' },
-            { label: 'SpaceX', href: 'https://www.spacex.com/' },
+            { label: 'SPACEX', href: 'https://www.spacex.com/' },
             { label: 'API', href: 'https://thespacedevs.com/' },
           ].map((link) => (
-            <Box
+            <a
               key={link.label}
-              as="a"
               href={link.href}
               target="_blank"
               rel="noopener noreferrer"
-              color="gray.400"
-              fontSize="14px"
-              fontWeight="500"
-              _hover={{ color: 'gray.100' }}
-              transition="color 0.2s"
-              textDecoration="none"
+              className="font-pixel text-[10px] no-underline transition-colors hover:text-space-blue"
+              style={{ color: theme.muted }}
             >
               {link.label}
-            </Box>
+            </a>
           ))}
-        </Flex>
-      </Flex>
-    </Box>
+        </nav>
+      </div>
+    </header>
   )
 }
 

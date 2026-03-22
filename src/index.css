@@ -1,3 +1,22 @@
+@import "tailwindcss";
+@import 'pixel-retroui/dist/index.css';
+
+/* Retro color theme */
+@theme {
+  --color-space-bg: #0f0f23;
+  --color-space-panel: #1a1a2e;
+  --color-space-border: #fefcd0;
+  --color-space-text: #fefcd0;
+  --color-space-muted: #8b8b8b;
+  --color-space-green: #00ff41;
+  --color-space-red: #ff0040;
+  --color-space-blue: #4dc9f6;
+  --color-space-purple: #c381b5;
+  --color-space-yellow: #ffd700;
+  --font-pixel: 'Press Start 2P', monospace;
+  --font-retro: 'VT323', monospace;
+}
+
 *,
 *::before,
 *::after {
@@ -7,10 +26,145 @@
 }
 
 body {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-family: 'VT323', monospace;
   min-height: 100vh;
+  background-color: #0f0f23;
+  color: #fefcd0;
+  font-size: 18px;
+  line-height: 1.4;
 }
 
 #root {
   min-height: 100vh;
+  position: relative;
+}
+
+/* Scanline overlay */
+#root::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(0, 0, 0, 0.08) 0px,
+    rgba(0, 0, 0, 0.08) 1px,
+    transparent 1px,
+    transparent 3px
+  );
+}
+
+/* CRT vignette */
+#root::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9998;
+  background: radial-gradient(
+    ellipse at center,
+    transparent 60%,
+    rgba(0, 0, 0, 0.4) 100%
+  );
+}
+
+/* Pixel font utility */
+.font-pixel {
+  font-family: 'Press Start 2P', monospace;
+}
+
+.font-retro {
+  font-family: 'VT323', monospace;
+}
+
+/* Terminal green glow */
+.glow-green {
+  text-shadow: 0 0 8px #00ff41, 0 0 16px #00ff41, 0 0 32px rgba(0, 255, 65, 0.3);
+}
+
+/* Blue glow */
+.glow-blue {
+  text-shadow: 0 0 8px #4dc9f6, 0 0 16px rgba(77, 201, 246, 0.5);
+}
+
+/* Red glow */
+.glow-red {
+  text-shadow: 0 0 8px #ff0040, 0 0 16px rgba(255, 0, 64, 0.5);
+}
+
+/* Pixel-perfect images */
+.pixel-image {
+  image-rendering: pixelated;
+  image-rendering: -moz-crisp-edges;
+}
+
+/* Animated star field background */
+@keyframes twinkle {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 1; }
+}
+
+.star-field {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background-image:
+    radial-gradient(1px 1px at 10% 20%, #fefcd0 50%, transparent 50%),
+    radial-gradient(1px 1px at 30% 60%, #fefcd0 50%, transparent 50%),
+    radial-gradient(1px 1px at 50% 10%, #fefcd0 50%, transparent 50%),
+    radial-gradient(1px 1px at 70% 80%, #fefcd0 50%, transparent 50%),
+    radial-gradient(1px 1px at 90% 40%, #fefcd0 50%, transparent 50%),
+    radial-gradient(1px 1px at 15% 85%, #4dc9f6 50%, transparent 50%),
+    radial-gradient(1px 1px at 45% 35%, #fefcd0 50%, transparent 50%),
+    radial-gradient(1px 1px at 65% 55%, #fefcd0 50%, transparent 50%),
+    radial-gradient(1px 1px at 85% 15%, #c381b5 50%, transparent 50%),
+    radial-gradient(1px 1px at 25% 45%, #fefcd0 50%, transparent 50%),
+    radial-gradient(2px 2px at 5% 70%, #fefcd0 50%, transparent 50%),
+    radial-gradient(2px 2px at 55% 90%, #4dc9f6 50%, transparent 50%),
+    radial-gradient(1px 1px at 80% 30%, #fefcd0 50%, transparent 50%),
+    radial-gradient(1px 1px at 35% 15%, #fefcd0 50%, transparent 50%),
+    radial-gradient(1px 1px at 95% 65%, #fefcd0 50%, transparent 50%),
+    radial-gradient(2px 2px at 20% 95%, #00ff41 50%, transparent 50%),
+    radial-gradient(1px 1px at 75% 5%, #fefcd0 50%, transparent 50%),
+    radial-gradient(1px 1px at 40% 75%, #fefcd0 50%, transparent 50%),
+    radial-gradient(1px 1px at 60% 25%, #fefcd0 50%, transparent 50%);
+  animation: twinkle 4s ease-in-out infinite alternate;
+}
+
+/* Blink animation for retro cursor/indicators */
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+.blink {
+  animation: blink 1s step-end infinite;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0f0f23;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #fefcd0;
+  border: 2px solid #0f0f23;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #c381b5;
+}
+
+/* Override pixel-retroui defaults for dark theme */
+.retro-card {
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.retro-card:hover {
+  transform: translateY(-4px);
 }

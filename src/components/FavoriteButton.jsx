@@ -1,46 +1,32 @@
-import { Box } from '@chakra-ui/react'
+import { theme } from '../theme'
 
 function FavoriteButton({ isFavorite, onToggle, size = 'md' }) {
   const sizes = {
-    sm: { w: '32px', h: '32px', icon: 16 },
-    md: { w: '36px', h: '36px', icon: 18 },
+    sm: { w: 28, icon: 14 },
+    md: { w: 32, icon: 16 },
   }
   const s = sizes[size] || sizes.md
 
   return (
-    <Box
-      as="button"
+    <button
       onClick={(e) => {
         e.stopPropagation()
         onToggle()
       }}
-      w={s.w}
-      h={s.h}
-      display="flex"
-      alignItems="center"
-      justifyContent="center"
-      borderRadius="full"
-      bg={isFavorite ? 'rgba(239, 68, 68, 0.15)' : 'rgba(0, 0, 0, 0.4)'}
-      border="none"
-      cursor="pointer"
-      transition="all 0.2s"
-      _hover={{
-        bg: isFavorite ? 'rgba(239, 68, 68, 0.25)' : 'rgba(0, 0, 0, 0.6)',
-        transform: 'scale(1.1)',
+      className="flex items-center justify-center cursor-pointer transition-transform hover:scale-110 border-none"
+      style={{
+        width: s.w,
+        height: s.w,
+        backgroundColor: isFavorite ? 'rgba(255, 0, 64, 0.2)' : 'rgba(0, 0, 0, 0.5)',
+        border: `2px solid ${isFavorite ? theme.red : theme.muted}`,
+        color: isFavorite ? theme.red : theme.muted,
       }}
       aria-label={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
     >
-      <svg
-        width={s.icon}
-        height={s.icon}
-        viewBox="0 0 24 24"
-        fill={isFavorite ? '#ef4444' : 'none'}
-        stroke={isFavorite ? '#ef4444' : '#9ca3af'}
-        strokeWidth="2"
-      >
-        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
-      </svg>
-    </Box>
+      <span className="font-pixel" style={{ fontSize: s.icon - 2 }}>
+        {isFavorite ? '\u2665' : '\u2661'}
+      </span>
+    </button>
   )
 }
 

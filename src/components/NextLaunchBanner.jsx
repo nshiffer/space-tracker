@@ -1,65 +1,55 @@
-import { Box, Flex, Text } from '@chakra-ui/react'
+import { Card } from 'pixel-retroui'
+import { theme } from '../theme'
 import Countdown from './Countdown'
 
 function NextLaunchBanner({ launch }) {
   return (
-    <Box
-      bgGradient="to-br"
-      gradientFrom="gray.900"
-      gradientVia="#111d3a"
-      gradientTo="gray.900"
-      borderBottomWidth="1px"
-      borderColor="gray.800"
-      py={{ base: 8, md: 10 }}
+    <div
+      className="py-8 md:py-10"
+      style={{
+        backgroundColor: theme.panel,
+        borderBottom: `3px solid ${theme.border}`,
+      }}
     >
-      <Flex
-        maxW="1200px"
-        mx="auto"
-        px={{ base: 4, md: 6 }}
-        justify="space-between"
-        align="center"
-        gap={8}
-        direction={{ base: 'column', md: 'row' }}
-        textAlign={{ base: 'center', md: 'left' }}
-      >
-        <Box>
-          <Box
-            display="inline-block"
-            bg="blue.500"
-            color="white"
-            fontSize="11px"
-            fontWeight="700"
-            textTransform="uppercase"
-            letterSpacing="1.5px"
-            px={3}
-            py={1}
-            borderRadius="sm"
-            mb={3}
-          >
-            Next Launch
-          </Box>
-          <Text
-            fontFamily="'Space Grotesk', sans-serif"
-            fontSize={{ base: '22px', md: '28px' }}
-            fontWeight="700"
-            color="gray.100"
-            lineHeight={1.2}
-            mb={2}
-          >
-            {launch.name}
-          </Text>
-          <Text color="gray.400" fontSize="16px" mb={1}>
-            {launch.launch_service_provider?.name || 'Unknown Provider'}
-          </Text>
-          {launch.pad?.location?.name && (
-            <Text color="gray.500" fontSize="14px">
-              {launch.pad.location.name}
-            </Text>
-          )}
-        </Box>
-        <Countdown targetDate={launch.net} />
-      </Flex>
-    </Box>
+      <div className="max-w-[1200px] mx-auto px-4 md:px-6">
+        <Card
+          bg={theme.bg}
+          textColor={theme.text}
+          borderColor={theme.green}
+          shadowColor={theme.purple}
+          className="p-4 md:p-6"
+        >
+          <div className="flex flex-col md:flex-row justify-between items-center gap-6 md:gap-8">
+            <div className="text-center md:text-left">
+              <div
+                className="font-pixel text-[10px] inline-block px-3 py-1.5 mb-3"
+                style={{
+                  backgroundColor: theme.green,
+                  color: theme.bg,
+                }}
+              >
+                &gt; MISSION BRIEFING
+              </div>
+              <h2
+                className="font-pixel text-xs md:text-sm mb-3 leading-relaxed glow-blue"
+                style={{ color: theme.blue }}
+              >
+                {launch.name}
+              </h2>
+              <p className="font-retro text-xl mb-1" style={{ color: theme.text }}>
+                {launch.launch_service_provider?.name || 'Unknown Provider'}
+              </p>
+              {launch.pad?.location?.name && (
+                <p className="font-retro text-lg" style={{ color: theme.muted }}>
+                  &gt; {launch.pad.location.name}
+                </p>
+              )}
+            </div>
+            <Countdown targetDate={launch.net} />
+          </div>
+        </Card>
+      </div>
+    </div>
   )
 }
 

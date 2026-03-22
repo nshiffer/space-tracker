@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Box, Flex, Text } from '@chakra-ui/react'
+import { theme } from '../theme'
 
 function Countdown({ targetDate }) {
   const [timeLeft, setTimeLeft] = useState(getTimeLeft(targetDate))
@@ -17,59 +17,53 @@ function Countdown({ targetDate }) {
 
   if (isPast) {
     return (
-      <Box
-        color="yellow.400"
-        fontSize="16px"
-        fontWeight="500"
-        px={6}
-        py={3}
-        bg="rgba(245, 158, 11, 0.1)"
-        borderRadius="md"
-        borderWidth="1px"
-        borderColor="rgba(245, 158, 11, 0.3)"
+      <div
+        className="font-pixel text-xs px-4 py-3 blink"
+        style={{
+          color: theme.yellow,
+          border: `2px solid ${theme.yellow}`,
+          backgroundColor: 'rgba(255, 215, 0, 0.1)',
+        }}
       >
-        Launch window reached
-      </Box>
+        LAUNCH WINDOW REACHED
+      </div>
     )
   }
 
   return (
-    <Flex align="center" gap={2} flexShrink={0}>
-      <TimeBlock value={timeLeft.days} label="Days" />
-      <Text fontFamily="'Space Grotesk', sans-serif" fontSize={{ base: '24px', md: '32px' }} fontWeight="700" color="blue.400" pb={{ base: 4, md: 5 }}>:</Text>
-      <TimeBlock value={timeLeft.hours} label="Hours" />
-      <Text fontFamily="'Space Grotesk', sans-serif" fontSize={{ base: '24px', md: '32px' }} fontWeight="700" color="blue.400" pb={{ base: 4, md: 5 }}>:</Text>
-      <TimeBlock value={timeLeft.minutes} label="Min" />
-      <Text fontFamily="'Space Grotesk', sans-serif" fontSize={{ base: '24px', md: '32px' }} fontWeight="700" color="blue.400" pb={{ base: 4, md: 5 }}>:</Text>
-      <TimeBlock value={timeLeft.seconds} label="Sec" />
-    </Flex>
+    <div className="flex items-center gap-1 md:gap-2 shrink-0">
+      <TimeBlock value={timeLeft.days} label="DAYS" />
+      <span className="font-pixel text-xl md:text-3xl glow-green pb-5" style={{ color: theme.green }}>:</span>
+      <TimeBlock value={timeLeft.hours} label="HRS" />
+      <span className="font-pixel text-xl md:text-3xl glow-green pb-5" style={{ color: theme.green }}>:</span>
+      <TimeBlock value={timeLeft.minutes} label="MIN" />
+      <span className="font-pixel text-xl md:text-3xl glow-green pb-5" style={{ color: theme.green }}>:</span>
+      <TimeBlock value={timeLeft.seconds} label="SEC" />
+    </div>
   )
 }
 
 function TimeBlock({ value, label }) {
   return (
-    <Flex direction="column" align="center" gap={1}>
-      <Box
-        fontFamily="'Space Grotesk', sans-serif"
-        fontSize={{ base: '24px', md: '36px' }}
-        fontWeight="700"
-        color="gray.100"
-        bg="gray.800"
-        borderWidth="1px"
-        borderColor="gray.700"
-        borderRadius="md"
-        px={{ base: 2, md: 3.5 }}
-        py={{ base: 1.5, md: 2 }}
-        minW={{ base: '52px', md: '70px' }}
-        textAlign="center"
-        lineHeight={1}
+    <div className="flex flex-col items-center gap-1">
+      <div
+        className="font-pixel text-lg md:text-3xl glow-green px-2 md:px-3 py-1.5 md:py-2 min-w-[48px] md:min-w-[72px] text-center"
+        style={{
+          color: theme.green,
+          backgroundColor: theme.panel,
+          border: `2px solid ${theme.green}`,
+          boxShadow: `0 0 8px rgba(0, 255, 65, 0.2), inset 0 0 8px rgba(0, 255, 65, 0.05)`,
+        }}
       >
         {String(value).padStart(2, '0')}
-      </Box>
-      <Text fontSize="11px" textTransform="uppercase" letterSpacing="1px" color="gray.500">
+      </div>
+      <span
+        className="font-pixel text-[8px]"
+        style={{ color: theme.muted }}
+      >
         {label}
-      </Text>
-    </Flex>
+      </span>
+    </div>
   )
 }
 

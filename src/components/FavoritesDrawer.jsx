@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
-import { Box, Flex, Text, Image } from '@chakra-ui/react'
+import { Card } from 'pixel-retroui'
+import { theme } from '../theme'
 
 function FavoritesDrawer({ isOpen, onClose, favorites, onRemove }) {
   useEffect(() => {
@@ -15,109 +16,94 @@ function FavoritesDrawer({ isOpen, onClose, favorites, onRemove }) {
 
   return (
     <>
-      <Box
-        position="fixed"
-        inset={0}
-        bg="rgba(0,0,0,0.5)"
-        zIndex={900}
+      <div
+        className="fixed inset-0 z-[900]"
+        style={{ backgroundColor: 'rgba(0, 0, 0, 0.6)' }}
         onClick={onClose}
       />
-      <Box
-        position="fixed"
-        top={0}
-        right={0}
-        bottom={0}
-        w={{ base: '100%', sm: '380px' }}
-        bg="gray.900"
-        borderLeftWidth="1px"
-        borderColor="gray.700"
-        zIndex={901}
-        overflowY="auto"
-        transition="transform 0.3s"
+      <div
+        className="fixed top-0 right-0 bottom-0 w-full sm:w-[380px] z-[901] overflow-y-auto"
+        style={{
+          backgroundColor: theme.bg,
+          borderLeft: `3px solid ${theme.border}`,
+        }}
       >
-        <Flex justify="space-between" align="center" p={5} borderBottomWidth="1px" borderColor="gray.800">
-          <Text fontFamily="'Space Grotesk', sans-serif" fontSize="18px" fontWeight="700" color="gray.100">
-            Saved Launches
-          </Text>
-          <Box
-            as="button"
+        <div
+          className="flex justify-between items-center p-4"
+          style={{ borderBottom: `2px solid ${theme.border}` }}
+        >
+          <h2 className="font-pixel text-[10px]" style={{ color: theme.yellow }}>
+            &gt; SAVED MISSIONS
+          </h2>
+          <button
             onClick={onClose}
-            color="gray.400"
-            bg="transparent"
-            border="none"
-            cursor="pointer"
-            _hover={{ color: 'gray.100' }}
-            p={1}
+            className="font-pixel text-[10px] px-2 py-1 cursor-pointer border-none"
+            style={{ backgroundColor: theme.red, color: theme.bg }}
           >
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <line x1="18" y1="6" x2="6" y2="18" />
-              <line x1="6" y1="6" x2="18" y2="18" />
-            </svg>
-          </Box>
-        </Flex>
+            X
+          </button>
+        </div>
 
         {favorites.length === 0 ? (
-          <Flex direction="column" align="center" justify="center" py={16} px={6} gap={3}>
-            <Text fontSize="40px">💫</Text>
-            <Text color="gray.500" textAlign="center" fontSize="15px">
-              No saved launches yet. Click the heart icon on any launch to save it here.
-            </Text>
-          </Flex>
+          <div className="flex flex-col items-center justify-center py-16 px-6 gap-4">
+            <span className="text-3xl">&#x1F4AB;</span>
+            <p className="font-pixel text-[8px] text-center leading-relaxed" style={{ color: theme.muted }}>
+              NO SAVED MISSIONS.
+              <br />
+              PRESS THE HEART TO
+              <br />
+              SAVE A LAUNCH.
+            </p>
+          </div>
         ) : (
-          <Box p={3}>
+          <div className="p-3 flex flex-col gap-2">
             {favorites.map((fav) => (
-              <Flex
+              <Card
                 key={fav.id}
-                p={3}
-                mb={2}
-                bg="gray.800"
-                borderRadius="lg"
-                borderWidth="1px"
-                borderColor="gray.700"
-                gap={3}
-                align="center"
-                _hover={{ borderColor: 'gray.600' }}
-                transition="border-color 0.2s"
+                bg={theme.panel}
+                textColor={theme.text}
+                borderColor={theme.border}
+                shadowColor={theme.purple}
               >
-                <Box w="48px" h="48px" borderRadius="md" overflow="hidden" flexShrink={0} bg="gray.700">
-                  {fav.image ? (
-                    <Image src={fav.image} alt="" w="100%" h="100%" objectFit="cover" />
-                  ) : (
-                    <Flex w="100%" h="100%" align="center" justify="center" fontSize="20px">🚀</Flex>
-                  )}
-                </Box>
-                <Box flex={1} minW={0}>
-                  <Text fontSize="14px" fontWeight="600" color="gray.100" noOfLines={1}>
-                    {fav.name}
-                  </Text>
-                  <Text fontSize="12px" color="gray.400">
-                    {fav.provider}
-                  </Text>
-                  <Text fontSize="11px" color="gray.500">
-                    {new Date(fav.net).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
-                  </Text>
-                </Box>
-                <Box
-                  as="button"
-                  onClick={() => onRemove(fav)}
-                  color="gray.500"
-                  bg="transparent"
-                  border="none"
-                  cursor="pointer"
-                  _hover={{ color: 'red.400' }}
-                  p={1}
-                  flexShrink={0}
-                >
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <polyline points="3,6 5,6 21,6" />
-                    <path d="M19,6v14a2,2,0,0,1-2,2H7a2,2,0,0,1-2-2V6M8,6V4a2,2,0,0,1,2-2h4a2,2,0,0,1,2,2V6" />
-                  </svg>
-                </Box>
-              </Flex>
+                <div className="flex gap-3 items-center p-3">
+                  <div
+                    className="w-[44px] h-[44px] shrink-0 overflow-hidden"
+                    style={{ border: `1px solid ${theme.border}`, backgroundColor: theme.bg }}
+                  >
+                    {fav.image ? (
+                      <img src={fav.image} alt="" className="w-full h-full object-cover" />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center text-lg">&#x1F680;</div>
+                    )}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="font-pixel text-[8px] truncate" style={{ color: theme.text }}>
+                      {fav.name}
+                    </p>
+                    <p className="font-retro text-base" style={{ color: theme.blue }}>
+                      {fav.provider}
+                    </p>
+                    <p className="font-retro text-sm" style={{ color: theme.muted }}>
+                      {new Date(fav.net).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                    </p>
+                  </div>
+                  <button
+                    onClick={() => onRemove(fav)}
+                    className="font-pixel text-[8px] px-2 py-1 cursor-pointer shrink-0 border-none transition-colors"
+                    style={{
+                      backgroundColor: theme.panel,
+                      color: theme.red,
+                      border: `1px solid ${theme.red}`,
+                    }}
+                  >
+                    DEL
+                  </button>
+                </div>
+              </Card>
             ))}
-          </Box>
+          </div>
         )}
-      </Box>
+      </div>
     </>
   )
 }

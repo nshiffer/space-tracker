@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Box, Flex, Text } from '@chakra-ui/react'
+import { theme } from '../theme'
 
 function ShareButton({ launch }) {
   const [copied, setCopied] = useState(false)
@@ -27,45 +27,17 @@ function ShareButton({ launch }) {
   }
 
   return (
-    <Box
-      as="button"
+    <button
       onClick={handleShare}
-      bg="transparent"
-      border="1px solid"
-      borderColor="gray.600"
-      color="gray.300"
-      borderRadius="md"
-      px={3}
-      py={1.5}
-      fontSize="13px"
-      fontWeight="500"
-      cursor="pointer"
-      transition="all 0.2s"
-      _hover={{ borderColor: 'blue.500', color: 'blue.400' }}
-      display="inline-flex"
-      alignItems="center"
-      gap={1.5}
+      className="font-pixel text-[8px] px-2 py-1 cursor-pointer inline-flex items-center gap-1 transition-colors border-none"
+      style={{
+        backgroundColor: 'transparent',
+        color: copied ? theme.green : theme.muted,
+        border: `1px solid ${copied ? theme.green : theme.muted}`,
+      }}
     >
-      {copied ? (
-        <Flex align="center" gap={1.5}>
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <polyline points="20,6 9,17 4,12" />
-          </svg>
-          <Text as="span">Copied!</Text>
-        </Flex>
-      ) : (
-        <Flex align="center" gap={1.5}>
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <circle cx="18" cy="5" r="3" />
-            <circle cx="6" cy="12" r="3" />
-            <circle cx="18" cy="19" r="3" />
-            <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
-            <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
-          </svg>
-          <Text as="span">Share</Text>
-        </Flex>
-      )}
-    </Box>
+      {copied ? 'OK!' : 'SHARE'}
+    </button>
   )
 }
 

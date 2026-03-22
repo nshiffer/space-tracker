@@ -1,5 +1,6 @@
 import { useMemo } from 'react'
-import { Box, Flex, Text, SimpleGrid } from '@chakra-ui/react'
+import { Card } from 'pixel-retroui'
+import { theme } from '../theme'
 
 function LaunchStats({ launches, filter }) {
   const stats = useMemo(() => {
@@ -8,8 +9,6 @@ function LaunchStats({ launches, filter }) {
     const providers = {}
     const statuses = {}
     const countries = {}
-    let earliest = null
-    let latest = null
 
     launches.forEach((l) => {
       const provider = l.launch_service_provider?.name || 'Unknown'
@@ -20,10 +19,6 @@ function LaunchStats({ launches, filter }) {
 
       const country = l.pad?.location?.country_code || 'Unknown'
       countries[country] = (countries[country] || 0) + 1
-
-      const date = new Date(l.net)
-      if (!earliest || date < earliest) earliest = date
-      if (!latest || date > latest) latest = date
     })
 
     const topProvider = Object.entries(providers).sort((a, b) => b[1] - a[1])[0]
@@ -36,104 +31,87 @@ function LaunchStats({ launches, filter }) {
       uniqueProviders,
       uniqueCountries,
       statuses,
-      dateRange: { earliest, latest },
     }
   }, [launches])
 
   if (!stats) return null
 
   return (
-    <Box mb={8}>
-      <Flex align="center" gap={2} mb={4}>
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#60a5fa" strokeWidth="2">
-          <line x1="18" y1="20" x2="18" y2="10" />
-          <line x1="12" y1="20" x2="12" y2="4" />
-          <line x1="6" y1="20" x2="6" y2="14" />
-        </svg>
-        <Text fontFamily="'Space Grotesk', sans-serif" fontSize="16px" fontWeight="600" color="gray.200">
-          {filter === 'upcoming' ? 'Upcoming' : 'Previous'} Launch Stats
-        </Text>
-      </Flex>
+    <div className="mb-8">
+      <h3 className="font-pixel text-[10px] mb-4 glow-yellow" style={{ color: theme.yellow }}>
+        &gt; HIGH SCORES - {filter === 'upcoming' ? 'UPCOMING' : 'PREVIOUS'}
+      </h3>
 
-      <SimpleGrid columns={{ base: 2, md: 4 }} gap={4}>
-        <StatCard label="Total Launches" value={stats.total} icon="🚀" />
-        <StatCard label="Providers" value={stats.uniqueProviders} icon="🏢" />
-        <StatCard label="Countries" value={stats.uniqueCountries} icon="🌍" />
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+        <StatCard label="LAUNCHES" value={stats.total} />
+        <StatCard label="PROVIDERS" value={stats.uniqueProviders} />
+        <StatCard label="COUNTRIES" value={stats.uniqueCountries} />
         <StatCard
-          label="Top Provider"
-          value={stats.topProvider?.[0] || '—'}
-          subValue={stats.topProvider ? `${stats.topProvider[1]} launches` : ''}
-          icon="⭐"
+          label="TOP PLAYER"
+          value={stats.topProvider?.[0] || '\u2014'}
+          subValue={stats.topProvider ? `${stats.topProvider[1]} LAUNCHES` : ''}
           isText
         />
-      </SimpleGrid>
+      </div>
 
       {Object.keys(stats.statuses).length > 1 && (
-        <Flex mt={4} gap={2} flexWrap="wrap">
+        <div className="flex mt-3 gap-2 flex-wrap">
           {Object.entries(stats.statuses).map(([status, count]) => (
-            <Flex
+            <span
               key={status}
-              align="center"
-              gap={1.5}
-              px={3}
-              py={1.5}
-              bg="gray.800"
-              borderRadius="full"
-              borderWidth="1px"
-              borderColor="gray.700"
-              fontSize="12px"
+              className="font-pixel text-[8px] px-2 py-1 flex items-center gap-1.5"
+              style={{
+                backgroundColor: theme.panel,
+                border: `1px solid ${theme.border}`,
+                color: theme.text,
+              }}
             >
-              <Box w="8px" h="8px" borderRadius="full" bg={getStatusDotColor(status)} />
-              <Text color="gray.300" fontWeight="500">{status}</Text>
-              <Text color="gray.500">{count}</Text>
-            </Flex>
+              <span
+                className="inline-block w-2 h-2"
+                style={{ backgroundColor: getStatusDotColor(status) }}
+              />
+              {status.toUpperCase()} {count}
+            </span>
           ))}
-        </Flex>
+        </div>
       )}
-    </Box>
+    </div>
   )
 }
 
-function StatCard({ label, value, subValue, icon, isText }) {
+function StatCard({ label, value, subValue, isText }) {
   return (
-    <Box
-      bg="gray.800"
-      borderWidth="1px"
-      borderColor="gray.700"
-      borderRadius="lg"
-      p={4}
-      transition="border-color 0.2s"
-      _hover={{ borderColor: 'gray.600' }}
+    <Card
+      bg={theme.panel}
+      textColor={theme.text}
+      borderColor={theme.border}
+      shadowColor={theme.purple}
+      className="p-3"
     >
-      <Flex justify="space-between" align="flex-start" mb={2}>
-        <Text fontSize="12px" color="gray.500" fontWeight="500" textTransform="uppercase" letterSpacing="0.5px">
-          {label}
-        </Text>
-        <Text fontSize="16px" lineHeight={1}>{icon}</Text>
-      </Flex>
-      <Text
-        fontFamily="'Space Grotesk', sans-serif"
-        fontSize={isText ? '15px' : '28px'}
-        fontWeight="700"
-        color="gray.100"
-        lineHeight={1.2}
-        noOfLines={1}
+      <p className="font-pixel text-[7px] mb-2" style={{ color: theme.muted }}>
+        {label}
+      </p>
+      <p
+        className={`font-pixel glow-green ${isText ? 'text-[9px] leading-relaxed' : 'text-lg'} truncate`}
+        style={{ color: theme.green }}
       >
         {value}
-      </Text>
+      </p>
       {subValue && (
-        <Text fontSize="12px" color="gray.500" mt={1}>{subValue}</Text>
+        <p className="font-retro text-sm mt-1" style={{ color: theme.muted }}>
+          {subValue}
+        </p>
       )}
-    </Box>
+    </Card>
   )
 }
 
 function getStatusDotColor(status) {
-  if (status.includes('Go') || status.includes('Success')) return 'green.400'
-  if (status.includes('TBD') || status.includes('Hold')) return 'yellow.400'
-  if (status.includes('Fail')) return 'red.400'
-  if (status.includes('Flight')) return 'blue.400'
-  return 'gray.400'
+  if (status.includes('Go') || status.includes('Success')) return theme.green
+  if (status.includes('TBD') || status.includes('Hold')) return theme.yellow
+  if (status.includes('Fail')) return theme.red
+  if (status.includes('Flight')) return theme.blue
+  return theme.muted
 }
 
 export default LaunchStats
