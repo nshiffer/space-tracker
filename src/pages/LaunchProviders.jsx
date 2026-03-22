@@ -73,7 +73,7 @@ function LaunchProviders() {
   useDocumentTitle('Launch Providers - LNCH CTRL')
 
   return (
-    <div className="max-w-[800px] mx-auto px-4 md:px-6 py-8">
+    <div className="max-w-[800px] px-4 md:px-6 py-8" style={{ margin: '0 auto' }}>
       <h2 className="font-pixel text-sm mb-6 glow-green" style={{ color: theme.green }}>
         &gt; LAUNCH PROVIDERS
       </h2>

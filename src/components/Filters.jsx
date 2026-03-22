@@ -85,16 +85,15 @@ function Filters({ filter, setFilter, searchQuery, setSearchQuery, view, setView
         {/* Favorites */}
         <button
           onClick={onOpenFavorites}
-          className="flex items-center gap-1 px-2 py-1.5 cursor-pointer font-pixel text-[9px] transition-all hover:brightness-125 border-none"
+          className="flex items-center gap-1 px-2.5 py-1.5 cursor-pointer font-pixel text-[9px] transition-all hover:brightness-125 border-none"
           style={{
-            backgroundColor: favoritesCount > 0 ? 'rgba(0, 255, 65, 0.15)' : theme.panel,
-            color: favoritesCount > 0 ? theme.green : theme.muted,
-            border: `2px solid ${favoritesCount > 0 ? theme.green : theme.border}`,
+            backgroundColor: favoritesCount > 0 ? 'rgba(255, 215, 0, 0.15)' : theme.panel,
+            color: favoritesCount > 0 ? theme.yellow : theme.muted,
+            border: `2px solid ${favoritesCount > 0 ? theme.yellow : theme.border}`,
           }}
         >
-          <span>{favoritesCount > 0 ? '\u2605' : '\u2606'}</span>
-          <span>SAVED</span>
-          {favoritesCount > 0 && <span>({favoritesCount})</span>}
+          <span style={{ fontSize: 14 }}>{favoritesCount > 0 ? '\u2605' : '\u2606'}</span>
+          {favoritesCount > 0 && <span>{favoritesCount}</span>}
         </button>
 
         {/* Search - grows to fill remaining space */}

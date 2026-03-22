@@ -2,6 +2,7 @@ import { theme } from '../theme'
 
 function FavoriteButton({ isFavorite, onToggle, size = 'md' }) {
   const isSmall = size === 'sm'
+  const dim = isSmall ? 24 : 28
 
   return (
     <button
@@ -9,16 +10,19 @@ function FavoriteButton({ isFavorite, onToggle, size = 'md' }) {
         e.stopPropagation()
         onToggle()
       }}
-      className={`font-pixel cursor-pointer transition-all hover:brightness-125 border-none flex items-center gap-1 ${isSmall ? 'text-[7px] px-1.5 py-0.5' : 'text-[8px] px-2 py-1'}`}
+      className="cursor-pointer transition-all hover:scale-110 flex items-center justify-center border-none"
       style={{
-        backgroundColor: isFavorite ? 'rgba(0, 255, 65, 0.15)' : theme.panel,
-        color: isFavorite ? theme.green : theme.muted,
-        border: `2px solid ${isFavorite ? theme.green : theme.muted}`,
+        width: dim,
+        height: dim,
+        backgroundColor: isFavorite ? 'rgba(255, 215, 0, 0.2)' : 'rgba(0, 0, 0, 0.5)',
+        color: isFavorite ? theme.yellow : theme.muted,
+        border: `2px solid ${isFavorite ? theme.yellow : 'rgba(139,139,139,0.4)'}`,
+        fontSize: isSmall ? 12 : 14,
+        lineHeight: 1,
       }}
       aria-label={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
     >
-      <span>{isFavorite ? '\u2605' : '\u2606'}</span>
-      <span>{isFavorite ? 'SAVED' : 'SAVE'}</span>
+      {isFavorite ? '\u2605' : '\u2606'}
     </button>
   )
 }

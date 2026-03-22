@@ -11,7 +11,7 @@ function NextLaunchBanner({ launch }) {
         borderBottom: `3px solid ${theme.border}`,
       }}
     >
-      <div className="max-w-[1200px] mx-auto px-4 md:px-6">
+      <div className="max-w-[1200px] px-4 md:px-6" style={{ margin: '0 auto' }}>
         <Card
           bg={theme.bg}
           textColor={theme.text}

@@ -88,7 +88,7 @@ function HomePage() {
     <>
       {nextLaunch && <NextLaunchBanner launch={nextLaunch} />}
 
-      <div className="flex-1 w-full max-w-[1200px] mx-auto px-4 md:px-6 py-8">
+      <div className="flex-1 w-full max-w-[1200px] px-4 md:px-6 py-8" style={{ margin: '0 auto' }}>
         <Filters
           filter={filter}
           setFilter={setFilter}
@@ -243,7 +243,7 @@ function App() {
         className="py-6 mt-auto"
         style={{ borderTop: `2px solid ${theme.border}` }}
       >
-        <div className="max-w-[1200px] mx-auto px-4 md:px-6">
+        <div className="max-w-[1200px] px-4 md:px-6" style={{ margin: '0 auto' }}>
           <div className="flex flex-wrap justify-center gap-4 mb-4">
             <Link to="/about" className="font-pixel text-[8px] no-underline hover:underline" style={{ color: theme.muted }}>ABOUT</Link>
             <Link to="/how-launches-work" className="font-pixel text-[8px] no-underline hover:underline" style={{ color: theme.muted }}>HOW LAUNCHES WORK</Link>

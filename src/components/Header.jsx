@@ -11,7 +11,7 @@ function Header() {
         backdropFilter: 'blur(8px)',
       }}
     >
-      <div className="max-w-[1200px] mx-auto px-4 md:px-6 py-3 flex justify-between items-center">
+      <div className="max-w-[1200px] px-4 md:px-6 py-3 flex justify-between items-center" style={{ margin: '0 auto' }}>
         <Link to="/" className="flex items-center gap-2 no-underline">
           {/* Pixel-art ASCII rocket */}
           <span
