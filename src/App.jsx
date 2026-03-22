@@ -22,6 +22,27 @@ import { useLocalStorage } from './hooks/useLocalStorage'
 const API_BASE = 'https://ll.thespacedevs.com/2.2.0'
 const PAGE_SIZE = 12
 
+// Simple in-memory cache to avoid hitting API rate limits (429)
+const cache = {}
+const CACHE_TTL = 5 * 60 * 1000 // 5 minutes
+
+async function cachedFetch(url) {
+  const now = Date.now()
+  if (cache[url] && now - cache[url].time < CACHE_TTL) {
+    return cache[url].data
+  }
+  const response = await fetch(url)
+  if (response.status === 429) {
+    // Check if we have stale cached data we can use
+    if (cache[url]) return cache[url].data
+    throw new Error('Rate limited — the API is busy. Please wait a moment and try again.')
+  }
+  if (!response.ok) throw new Error(`API error: ${response.status}`)
+  const data = await response.json()
+  cache[url] = { data, time: now }
+  return data
+}
+
 function HomePage() {
   const [launches, setLaunches] = useState([])
   const [loading, setLoading] = useState(true)
@@ -55,9 +76,7 @@ function HomePage() {
         url = `${API_BASE}/${endpoint}/?limit=${PAGE_SIZE}&mode=detailed${searchParam}`
       }
 
-      const response = await fetch(url)
-      if (!response.ok) throw new Error(`API error: ${response.status}`)
-      const data = await response.json()
+      const data = await cachedFetch(url)
 
       if (append) {
         setLaunches((prev) => [...prev, ...(data.results || [])])
