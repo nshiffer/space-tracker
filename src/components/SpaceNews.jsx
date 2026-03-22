@@ -50,7 +50,7 @@ function SpaceNews() {
               bg={theme.panel}
               textColor={theme.text}
               borderColor={theme.border}
-              shadowColor={theme.purple}
+              shadowColor="transparent"
               className="overflow-hidden"
             >
               <div className="flex gap-3 p-3 items-center">

@@ -21,7 +21,7 @@ function LaunchModal({ launch, onClose, isFavorite, onToggleFavorite }) {
   }, [onClose])
 
   const launchDate = new Date(launch.net)
-  const imageUrl = launch.image?.image_url || launch.image?.thumbnail_url || null
+  const imageUrl = typeof launch.image === 'string' ? launch.image : (launch.image?.image_url || launch.image?.thumbnail_url || null)
 
   return (
     <div
@@ -37,7 +37,7 @@ function LaunchModal({ launch, onClose, isFavorite, onToggleFavorite }) {
           bg={theme.panel}
           textColor={theme.text}
           borderColor={theme.border}
-          shadowColor={theme.purple}
+          shadowColor="transparent"
           className="overflow-hidden"
         >
           {/* Top bar */}
@@ -48,17 +48,18 @@ function LaunchModal({ launch, onClose, isFavorite, onToggleFavorite }) {
               borderBottom: `2px solid ${theme.border}`,
             }}
           >
-            <span className="font-pixel text-[10px]" style={{ color: theme.green }}>
+            <span className="font-pixel text-[9px]" style={{ color: theme.green }}>
               &gt; MISSION DATA
             </span>
             <div className="flex gap-2 items-center">
               <FavoriteButton isFavorite={isFavorite} onToggle={onToggleFavorite} size="sm" />
               <button
                 onClick={onClose}
-                className="font-pixel text-[10px] px-2 py-1 cursor-pointer border-none"
+                className="font-pixel text-[10px] w-6 h-6 flex items-center justify-center cursor-pointer"
                 style={{
                   backgroundColor: theme.red,
-                  color: theme.bg,
+                  color: theme.text,
+                  border: `1px solid ${theme.border}`,
                 }}
               >
                 X
@@ -68,22 +69,24 @@ function LaunchModal({ launch, onClose, isFavorite, onToggleFavorite }) {
 
           {/* Image */}
           {imageUrl && (
-            <div className="h-[200px] md:h-[260px] overflow-hidden">
+            <div className="h-[200px] md:h-[260px] overflow-hidden relative">
               <img src={imageUrl} alt={launch.name} className="w-full h-full object-cover" />
+              <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(26,26,46,0.7) 0%, transparent 40%)' }} />
             </div>
           )}
 
           {/* Body */}
           <div className="p-5 md:p-6">
-            <div className="flex justify-between items-start gap-3 flex-wrap mb-5">
-              <h2 className="font-pixel text-xs md:text-sm leading-relaxed flex-1 glow-blue" style={{ color: theme.blue }}>
+            {/* Title row */}
+            <div className="mb-5">
+              <h2 className="font-pixel text-[11px] md:text-xs leading-[1.8] mb-2 glow-blue" style={{ color: theme.blue }}>
                 {launch.name}
               </h2>
-              <div className="flex gap-2 items-center shrink-0">
+              <div className="flex gap-2 items-center flex-wrap">
                 <ShareButton launch={launch} />
                 {launch.status?.name && (
                   <span
-                    className="font-pixel text-[8px] px-2 py-1"
+                    className="font-pixel text-[7px] px-2 py-1"
                     style={{
                       backgroundColor: theme.green,
                       color: theme.bg,
@@ -95,15 +98,21 @@ function LaunchModal({ launch, onClose, isFavorite, onToggleFavorite }) {
               </div>
             </div>
 
-            {/* Details */}
-            <div className="flex flex-col gap-2 mb-5">
+            {/* Details table */}
+            <div
+              className="flex flex-col gap-1.5 mb-5 py-3 px-3"
+              style={{
+                backgroundColor: 'rgba(15, 15, 35, 0.5)',
+                border: `1px solid ${theme.border}`,
+              }}
+            >
               <DetailRow label="DATE" value={launchDate.toLocaleDateString('en-US', {
                 weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',
               })} />
               <DetailRow label="TIME" value={launchDate.toLocaleTimeString('en-US', {
                 hour: '2-digit', minute: '2-digit', second: '2-digit', timeZoneName: 'short',
               })} />
-              <DetailRow label="PROVIDER" value={launch.launch_service_provider?.name} />
+              <DetailRow label="PROVIDER" value={launch.launch_service_provider?.name} highlight />
               <DetailRow label="ROCKET" value={launch.rocket?.configuration?.full_name} />
               <DetailRow label="PAD" value={launch.pad?.name} />
               <DetailRow label="LOCATION" value={launch.pad?.location?.name} />
@@ -113,16 +122,16 @@ function LaunchModal({ launch, onClose, isFavorite, onToggleFavorite }) {
             {launch.mission && (
               <div
                 className="pt-4 mt-2"
-                style={{ borderTop: `2px solid ${theme.border}` }}
+                style={{ borderTop: `1px solid ${theme.border}` }}
               >
-                <h3 className="font-pixel text-[10px] mb-3" style={{ color: theme.yellow }}>
+                <h3 className="font-pixel text-[9px] mb-3" style={{ color: theme.yellow }}>
                   &gt; MISSION: {launch.mission.name}
                 </h3>
                 {launch.mission.type && (
                   <span
-                    className="font-pixel text-[8px] inline-block px-2 py-1 mb-3"
+                    className="font-pixel text-[7px] inline-block px-2 py-1 mb-3"
                     style={{
-                      backgroundColor: 'rgba(77, 201, 246, 0.15)',
+                      backgroundColor: 'rgba(77, 201, 246, 0.1)',
                       color: theme.blue,
                       border: `1px solid ${theme.blue}`,
                     }}
@@ -147,9 +156,9 @@ function LaunchModal({ launch, onClose, isFavorite, onToggleFavorite }) {
             {launch.vidURLs?.length > 0 && (
               <div
                 className="pt-4 mt-4"
-                style={{ borderTop: `2px solid ${theme.border}` }}
+                style={{ borderTop: `1px solid ${theme.border}` }}
               >
-                <h3 className="font-pixel text-[10px] mb-3" style={{ color: theme.green }}>
+                <h3 className="font-pixel text-[9px] mb-3" style={{ color: theme.green }}>
                   &gt; WATCH LIVE
                 </h3>
                 <div className="flex flex-wrap gap-2">
@@ -159,15 +168,16 @@ function LaunchModal({ launch, onClose, isFavorite, onToggleFavorite }) {
                       href={vid.url}
                       target="_blank"
                       rel="noopener noreferrer"
+                      className="no-underline"
                     >
                       <Button
-                        bg={theme.blue}
-                        textColor={theme.bg}
-                        borderColor={theme.border}
-                        shadow={theme.purple}
-                        className="font-pixel !text-[8px]"
+                        bg={theme.panel}
+                        textColor={theme.green}
+                        borderColor={theme.green}
+                        shadow="transparent"
+                        className="font-pixel !text-[7px] !leading-relaxed"
                       >
-                        {(vid.title || `STREAM ${i + 1}`).toUpperCase()}
+                        {(vid.title || `STREAM ${i + 1}`).toUpperCase().slice(0, 40)}
                       </Button>
                     </a>
                   ))}
@@ -181,14 +191,14 @@ function LaunchModal({ launch, onClose, isFavorite, onToggleFavorite }) {
   )
 }
 
-function DetailRow({ label, value }) {
+function DetailRow({ label, value, highlight }) {
   if (!value) return null
   return (
     <div className="flex gap-3">
-      <span className="font-pixel text-[8px] min-w-[80px] pt-1" style={{ color: theme.purple }}>
+      <span className="font-pixel text-[7px] min-w-[72px] pt-1" style={{ color: theme.purple }}>
         {label}
       </span>
-      <span className="font-retro text-lg" style={{ color: theme.text }}>
+      <span className="font-retro text-lg" style={{ color: highlight ? theme.blue : theme.text }}>
         {value}
       </span>
     </div>

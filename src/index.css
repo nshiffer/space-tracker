@@ -162,9 +162,10 @@ body {
 
 /* Override pixel-retroui defaults for dark theme */
 .retro-card {
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  transition: transform 0.15s ease, filter 0.15s ease;
 }
 
 .retro-card:hover {
-  transform: translateY(-4px);
+  transform: translateY(-3px);
+  filter: brightness(1.15);
 }

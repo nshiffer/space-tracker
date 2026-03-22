@@ -63,7 +63,7 @@ function FavoritesDrawer({ isOpen, onClose, favorites, onRemove }) {
                 bg={theme.panel}
                 textColor={theme.text}
                 borderColor={theme.border}
-                shadowColor={theme.purple}
+                shadowColor="transparent"
               >
                 <div className="flex gap-3 items-center p-3">
                   <div

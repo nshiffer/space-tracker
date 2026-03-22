@@ -16,7 +16,7 @@ function NextLaunchBanner({ launch }) {
           bg={theme.bg}
           textColor={theme.text}
           borderColor={theme.green}
-          shadowColor={theme.purple}
+          shadowColor="transparent"
           className="p-4 md:p-6"
         >
           <div className="flex flex-col md:flex-row justify-between items-center gap-6 md:gap-8">

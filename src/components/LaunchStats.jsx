@@ -85,7 +85,7 @@ function StatCard({ label, value, subValue, isText }) {
       bg={theme.panel}
       textColor={theme.text}
       borderColor={theme.border}
-      shadowColor={theme.purple}
+      shadowColor="transparent"
       className="p-3"
     >
       <p className="font-pixel text-[7px] mb-2" style={{ color: theme.muted }}>
